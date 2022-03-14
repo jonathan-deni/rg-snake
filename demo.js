@@ -10,6 +10,7 @@ const DIRECTION = {
     DOWN: 3,
 }
 const MOVE_INTERVAL = 80;
+let gameLevel = 1;
 
 function initPosition() {
     return {
@@ -40,8 +41,6 @@ function initSnake(color) {
     }
 }
 let snake1 = initSnake("purple");
-let snake2 = initSnake("blue");
-let snake3 = initSnake("yellow");
 
 let apple1 = {
     color: "red",
@@ -82,10 +81,6 @@ function drawScore(snake) {
     let scoreCanvas;
     if (snake.color == snake1.color) {
         scoreCanvas = document.getElementById("score1Board");
-    } else if (snake.color == snake2.color){
-        scoreCanvas = document.getElementById("score2Board");
-    } else if (snake.color == snake3.color){
-        scoreCanvas = document.getElementById("score3Board");
     }
     let scoreCtx = scoreCanvas.getContext("2d");
 
@@ -93,6 +88,18 @@ function drawScore(snake) {
     scoreCtx.font = "30px Arial";
     scoreCtx.fillStyle = snake.color
     scoreCtx.fillText(snake.score, 10, scoreCanvas.scrollHeight / 2);
+}
+
+function drawLevel(level) {
+    console.log(level)
+    let levelCanvas = document.getElementById("levelBoard");
+    let levelCtx = levelCanvas.getContext("2d");
+
+    levelCtx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+    levelCtx.font = "20px Arial";
+    levelCtx.fillStyle = "red";
+    levelCtx.fillText(`Level ${level}`, 10, levelCanvas.scrollHeight / 2);
+    console.log(levelCtx)
 }
 
 function draw() {
@@ -106,7 +113,8 @@ function draw() {
         for (let i = 1; i < snake1.body.length; i++) {
             if(i == snake1.body.length - 1) {
                 drawSnakeTail(ctx, snake1.body[i].x, snake1.body[i].y);
-            } else {
+            }
+            else {
                 drawSnakeBody(ctx, snake1.body[i].x, snake1.body[i].y);
             }
         }
@@ -115,8 +123,7 @@ function draw() {
         drawApple(ctx, apple2.position.x, apple2.position.y, apple2.color);
 
         drawScore(snake1);
-        drawScore(snake2);
-        drawScore(snake3);
+        drawLevel(gameLevel);
     }, REDRAW_INTERVAL);
 }
 
@@ -135,11 +142,16 @@ function teleport(snake) {
     }
 }
 
+function validateLevel(score) {
+    return Math.floor(score / 5) + 1
+}
+
 function eat(snake, apple) {
     if (snake.head.x == apple.position.x && snake.head.y == apple.position.y) {
         apple.position = initPosition();
         snake.score++;
         snake.body.push({x: snake.head.x, y: snake.head.y});
+        gameLevel = validateLevel(snake.score)
     }
 }
 
@@ -209,7 +221,7 @@ function move(snake) {
             break;
     }
     moveBody(snake);
-    if (!checkCollision([snake1, snake2, snake3])) {
+    if (!checkCollision([snake1])) {
         setTimeout(function() {
             move(snake);
         }, MOVE_INTERVAL);
