@@ -91,7 +91,6 @@ function drawScore(snake) {
 }
 
 function drawLevel(level) {
-    console.log(level)
     let levelCanvas = document.getElementById("levelBoard");
     let levelCtx = levelCanvas.getContext("2d");
 
@@ -99,7 +98,6 @@ function drawLevel(level) {
     levelCtx.font = "20px Arial";
     levelCtx.fillStyle = "red";
     levelCtx.fillText(`Level ${level}`, 10, levelCanvas.scrollHeight / 2);
-    console.log(levelCtx)
 }
 
 function draw() {
